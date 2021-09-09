@@ -3,16 +3,89 @@
  ********************************************************/
 // 添加监听事件
 document.getElementById('go').addEventListener('click',ock,false);
+
+function log(log) {
+    chrome.tabs.executeScript({
+        code: 'console.log("' + log + '")'
+    });
+}
+
+function doSelect(sel, val) {
+	var all_options = document.getElementById(sel).options;
+   for (i=0; i<all_options.length; i++){
+      if (all_options[i].value == val)  // 根据option标签的ID来进行判断  测试的代码这里是两个等号
+      {
+         all_options[i].selected = true;
+      }
+   }
+   var event = document.createEvent("HTMLEvents");
+    event.initEvent("change",true,false);
+    document.getElementById(sel).dispatchEvent(event);
+}
+
+//初始化上次使用的信息
+function initStorage() {
+	chrome.storage.local.get(['selp'], function (result) {
+		if (result.selp != undefined) {
+			doSelect('p', result.selp);
+		}
+	});
+	chrome.storage.local.get(['selc'], function (result) {
+		if (result.selc != undefined) {
+			doSelect('c', result.selc);
+		}
+	});
+	chrome.storage.local.get(['selr'], function (result) {
+		if (result.selr != undefined) {
+			doSelect('r', result.selr);
+		}
+	});
+	chrome.storage.local.get(['sely'], function (result) {
+		if (result.sely != undefined) {
+			doSelect('y', result.sely);
+		}
+	});
+	chrome.storage.local.get(['selm'], function (result) {
+		if (result.selm != undefined) {
+			doSelect('m', result.selm);
+		}
+	});
+	chrome.storage.local.get(['seld'], function (result) {
+		if (result.seld != undefined) {
+			doSelect('d', result.seld);
+		}
+	});
+	chrome.storage.local.get(['selg'], function (result) {
+		if (result.selg != undefined) {
+			doSelect('g', result.selg);
+		}
+	});
+}
+
 // 提交表单，生成身份证号
 function ock(){
 	var rNo = document.getElementById("rNo");
 	var selp = document.getElementById("p");
+	chrome.storage.local.set({ 'selp': selp.value }, function () {
+    });
 	var selc = document.getElementById("c");
+	chrome.storage.local.set({ 'selc': selc.value }, function () {
+    });
 	var selr = document.getElementById("r").value;
+	chrome.storage.local.set({ 'selr': selr }, function () {
+    });
 	var sely = document.getElementById("y").value;
+	chrome.storage.local.set({ 'sely': sely }, function () {
+    });
 	var selm = padLeft(document.getElementById("m").value,2);
+	chrome.storage.local.set({ 'selm': document.getElementById("m").value }, function () {
+    });
 	var seld = padLeft(document.getElementById("d").value,2);
+	chrome.storage.local.set({ 'seld': document.getElementById("d").value }, function () {
+    });
 	var selg = document.getElementById("g").value;
+	chrome.storage.local.set({ 'selg': selg }, function () {
+    });
 	var _n = document.getElementById("n").value;
 	if(!_n) _n = 5;
 	var seln = Number(_n);
@@ -243,3 +316,5 @@ dateLoad();
 // 添加监听事件
 ySelect.addEventListener('change',loadM,false);
 mSelect.addEventListener('change',loadD,false);
+
+initStorage();
